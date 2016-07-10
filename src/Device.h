@@ -78,7 +78,7 @@ public:
 	 * Change value / state of Device
 	 * @param sync - sync with server
 	 */
-	bool setValue(unsigned long value, bool sync = true);
+	virtual bool setValue(unsigned long value, bool sync = true);
 
 	void on();
 
@@ -126,11 +126,10 @@ public:
 	int toString(char buffer[]);
 
 private:
-
+	void _init(char* name, uint8_t iid, uint8_t ipin, Device::DeviceType type, bool sensor);
+protected:
 	DeviceListener changeListener;
 	DeviceListener syncListerner;
-
-	void _init(char* name, uint8_t iid, uint8_t ipin, Device::DeviceType type, bool sensor);
 
 };
 

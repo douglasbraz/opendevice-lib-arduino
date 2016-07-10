@@ -20,6 +20,7 @@
 #include "Command.h"
 #include "DeviceConnection.h"
 #include "Device.h"
+#include "devices/LogicalDevice.h"
 #include "devices/FuncSensor.h"
 #include "../dependencies.h"
 
