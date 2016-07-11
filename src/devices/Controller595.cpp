@@ -3,10 +3,6 @@
 
 Controller595 *Controller595::controller=NULL;
 
-Controller595::Controller595(){
-
-}
-
 Controller595::Controller595(int lacth,int cloc,int data,int chips){
 	_pinClock = cloc;
 	_pinLacth = lacth;
@@ -14,11 +10,6 @@ Controller595::Controller595(int lacth,int cloc,int data,int chips){
 	_chips = chips;
 	_portas = new byte[_chips];
 	Controller595::controller = (Controller595 *)this;
-}
-
-Controller595::Controller595(int lacth,int cloc,int data,int chips,Controller595 *c){
-	Controller595(lacth,cloc,data,chips);
-	Controller595::controller = c;
 }
 
 void Controller595::begin(){
