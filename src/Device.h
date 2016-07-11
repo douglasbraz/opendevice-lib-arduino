@@ -54,6 +54,7 @@ public:
 	uint8_t pin;
 	unsigned long currentValue;
 	DeviceType type;
+	char* deviceName;
 
 
 	bool sensor;
@@ -77,11 +78,16 @@ public:
 	 * Change value / state of Device
 	 * @param sync - sync with server
 	 */
-	bool setValue(unsigned long value, bool sync = true);
+	virtual bool setValue(unsigned long value, bool sync = true);
 
 	void on();
 
 	void off();
+
+	bool isON() { return currentValue == HIGH; }
+
+	bool isOFF() { return currentValue == LOW; }
+
 
 	/**
 	 * Get current value.
@@ -93,6 +99,10 @@ public:
 	virtual void deserializeExtraData(Command *cmd, DeviceConnection *conn);
 
 	virtual bool hasChanged();
+
+	void name(char* name);
+
+	char* name();
 
 	/**
 	 * Enable to read value using interruptions. <br/>
@@ -116,11 +126,10 @@ public:
 	int toString(char buffer[]);
 
 private:
-
+	void _init(char* name, uint8_t iid, uint8_t ipin, Device::DeviceType type, bool sensor);
+protected:
 	DeviceListener changeListener;
 	DeviceListener syncListerner;
-
-	void _init(uint8_t iid, uint8_t ipin, Device::DeviceType type, bool sensor);
 
 };
 

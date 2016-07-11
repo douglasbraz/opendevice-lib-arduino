@@ -18,7 +18,7 @@
 #include <WifiConnection.h>
 
 // TODO: use list: http://stackoverflow.com/a/27088552/955857
-WiFiClient WifiConnection::client;
+WiFiClient WifiConnection::client; // Current Client
 
 WifiConnection::WifiConnection()
 	: server(DEFAULT_SERVER_PORT) {
@@ -75,7 +75,7 @@ bool WifiConnection::checkDataAvalible(void){
 #if defined(ESP8266)
 	// This is only to debug
 	if(STATION_CONNECTING == wifi_station_get_connect_status()){
-		Logger.debug("WifiConnection", "reconnecting...");
+		Logger.debug("Wifi", "reconnecting...");
 		if(WiFi.waitForConnectResult() != WL_CONNECTED){ // need wait..
 			Logger.debug("STA Reconnect", "FAIL");
 		}else{
@@ -97,11 +97,11 @@ bool WifiConnection::checkDataAvalible(void){
 		Logger.debug("WifiClient", "connected");
 		client = newClient;
 		setStream(&client);
-
-		// wait to send data.
-		while (!newClient.available()) {
-			delay(1);
-		}
+//
+//		// wait to send data.
+//		while (!newClient.available()) {
+//			delay(1);
+//		}
 	}else{
 
 		int count = Udp.parsePacket();

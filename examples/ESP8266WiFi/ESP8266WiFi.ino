@@ -4,6 +4,7 @@
  * 
  * The Open Device will create a TCP server on the default port and a softAP using ODev.name("...").
  * 
+ * 
  * Links:
  * - Tutorial: https://opendevice.atlassian.net/wiki/display/DOC/WiFi+using+ESP8266 
  * - https://github.com/esp8266/arduino
@@ -13,48 +14,26 @@
  */
 
 
-//#include <ESP8266AT.h> // to: AT Firmware
+#include <ESP8266WiFi.h>  // Enable ESP8266 Embedded
+// #include <PubSubClient.h> // Enable + MQTT
 
 #include <OpenDevice.h>
-#include <utility/Timeout.h>
 
-const char* ssid = "OpenWrt";
-const char* password = "";
+const char* ssid = "--";
+const char* password = "--";
 
 void setup() {
   ODev.name("ODev-Thing1");
-  ODev.enableKeepAlive(false);
+  // Config.server = "192.168.3.105"; // Only for MQTT
   ODev.enableDebug();
 
-  ODev.addDevice(2, Device::DIGITAL);
+  ODev.addDevice("LED", 2, Device::DIGITAL);
 
-  // WiFi.init(new ESP8266(Serial1, 115200)); // to: AT Firmware
   WiFi.mode(WIFI_AP_STA);
   WiFi.begin(ssid, password);
   ODev.begin(WiFi);
 }
 
 void loop() {
-
-  // Send using console
-  if(Serial.available()){
-    readAndSendAT();
-  }
-
   ODev.loop();
 }
-
-// Optional - Only for debug purpose
-void readAndSendAT(){
-    #ifdef Serial1
-    while(Serial.available() > 0){
-      Serial1.write(Serial.read());
-    }
-
-    // wait for response
-    String rec = WiFi.ESP->recvString("OK", "ERROR", 10000);
-    Serial.print(rec);
-    #endif
-}
-
-

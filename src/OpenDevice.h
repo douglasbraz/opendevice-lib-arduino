@@ -20,6 +20,7 @@
 #include "Command.h"
 #include "DeviceConnection.h"
 #include "Device.h"
+#include "devices/LogicalDevice.h"
 #include "devices/FuncSensor.h"
 #include "../dependencies.h"
 
@@ -39,8 +40,12 @@ using namespace od;
 #endif
 
 
-#if defined(PubSubClient_h)
+#if defined(PubSubClient_h) && !defined(ESP8266)
 	#include "MQTTConnection.h"
+#endif
+
+#if defined(PubSubClient_h) && defined(ESP8266)
+#include "MQTTWifiConnection.h"
 #endif
 
 
@@ -50,11 +55,12 @@ using namespace od;
 #endif
 
 // ESP8266 Standalone
-#if defined(ESP8266)
+#if defined(ESP8266) && !defined(PubSubClient_h)
 	#include "stdlib_noniso.h"
 	#include <ESP8266WiFi.h>
 	#include <WifiConnection.h>
 #endif
+
 
 #if defined(MFRC522_h)
 	#include <devices/RFIDSensor.h>
@@ -101,7 +107,6 @@ private:
 	// Debouncing of normal pressing (for Sensor's)
 	long time;
 	bool autoControl; // Changes in the sensor should affect bonded devices..
-	bool keepAliveEnabled;
 	long keepAliveTime;
 	long keepAliveMiss;
 	bool connected;
@@ -275,7 +280,7 @@ void begin(usb_serial_class &serial, unsigned long baud){
 }
 #endif
 
-#if defined(ESP8266)
+#if defined(ESP8266) && !defined(PubSubClient_h)
 void begin(ESP8266WiFiClass &wifi){
 
 	WifiConnection *conn =  new WifiConnection();
@@ -283,6 +288,18 @@ void begin(ESP8266WiFiClass &wifi){
 }
 #endif
 
+
+#if defined(ESP8266) && defined(PubSubClient_h)
+void begin(ESP8266WiFiClass &wifi){
+    while (WiFi.status() != WL_CONNECTED) {
+		delay(500);
+		Serial.print("#");
+    }
+
+	MQTTWifiConnection *conn =  new MQTTWifiConnection();
+	begin(*conn);
+}
+#endif
 
 // TODO: Make compatible with Due
 //	#ifdef _SAM3XA_
@@ -321,16 +338,16 @@ void begin(ESP8266WiFiClass &wifi){
 	void debug(const String &s);
 	#endif
 
-	Device* addSensor(uint8_t pin, Device::DeviceType type, uint8_t targetID);
-	Device* addSensor(uint8_t pin, Device::DeviceType type);
+	Device* addSensor(char* name, uint8_t pin, Device::DeviceType type, uint8_t targetID);
+	Device* addSensor(char* name, uint8_t pin, Device::DeviceType type);
 	Device* addSensor(Device& sensor);
 	Device* addSensor(unsigned long (*function)()){
 		FuncSensor* func = new FuncSensor(function);
 		return addDevice(*func);
 	}
 
-	Device* addDevice(uint8_t pin, Device::DeviceType type, bool sensor,uint8_t id);
-	Device* addDevice(uint8_t pin, Device::DeviceType type);
+	Device* addDevice(char* name, uint8_t pin, Device::DeviceType type, bool sensor,uint8_t id);
+	Device* addDevice(char* name, uint8_t pin, Device::DeviceType type);
 	Device* addDevice(Device& device);
 
 	bool addCommand(const char * name, void (*function)());
