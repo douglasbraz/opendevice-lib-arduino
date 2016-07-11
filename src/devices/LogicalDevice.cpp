@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "LogicalDevice.h"
-#include "Controller595.h"
+
 
 
 LogicalDevice::LogicalDevice(int pin,AbstractExpander *controller){
@@ -10,7 +10,6 @@ LogicalDevice::LogicalDevice(int pin,AbstractExpander *controller){
 
 LogicalDevice::LogicalDevice(int pin){
 	_pin = pin;
-	_controller = Controller595::controller;
 }
 
 bool LogicalDevice::setValue(unsigned long value, bool sync){

@@ -182,6 +182,10 @@ void OpenDeviceClass::enableDebug(uint8_t _debugTarget){
 	if(_debugTarget == DEBUG_SERIAL) Serial.begin(DEFAULT_BAUD);
 }
 
+void OpenDeviceClass::setIoExpander(AbstractExpander *expander){
+	this->expander = expander;
+}
+
 /** Called when a command is received by the connection */
 void OpenDeviceClass::onMessageReceived(Command cmd) {
 	ODev.lastCMD = cmd;
@@ -472,6 +476,23 @@ Device* OpenDeviceClass::addDevice(char* name, uint8_t pin, Device::DeviceType t
 		devices[deviceLength]->setSyncListener(&(OpenDeviceClass::onDeviceChanged));
 		deviceLength++;
 
+		return devices[deviceLength-1];
+	} else{
+		return false;
+	}
+}
+
+Device* OpenDeviceClass::addLogical(char* name, uint8_t pin,AbstractExpander *expander, uint8_t id){
+	if (deviceLength < MAX_DEVICE) {
+		if (id == 0) id = (deviceLength + 1);
+		if(expander==NULL)
+			devices[deviceLength] = new LogicalDevice(pin,this->expander);
+		else
+			devices[deviceLength] = new LogicalDevice(pin,expander);
+		devices[deviceLength]->name(name);
+		devices[deviceLength]->id=id;
+		devices[deviceLength]->setSyncListener(&(OpenDeviceClass::onDeviceChanged));
+		deviceLength++;
 		return devices[deviceLength-1];
 	} else{
 		return false;

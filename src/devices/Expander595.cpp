@@ -1,18 +1,12 @@
 #include "Arduino.h"
-#include "Controller595.h"
+#include "Expander595.h"
 
-Controller595 *Controller595::controller=NULL;
-
-Controller595::Controller595(int lacth,int cloc,int data,int chips){
+Expander595::Expander595(int lacth,int cloc,int data,int chips){
 	_pinClock = cloc;
 	_pinLacth = lacth;
 	_pinData = data;
 	_chips = chips;
 	_portas = new byte[_chips];
-	Controller595::controller = (Controller595 *)this;
-}
-
-void Controller595::begin(){
 	pinMode(_pinClock, OUTPUT);
 	pinMode(_pinLacth, OUTPUT);
 	pinMode(_pinData, OUTPUT);
@@ -22,14 +16,18 @@ void Controller595::begin(){
   	syncData();
 }
 
-void Controller595::digitalWrite(int indice,byte value){
+void Expander595::begin(){
+
+}
+
+void Expander595::digitalWrite(int indice,byte value){
 	int chipSelect = (int)indice/9;
     int pinSelect = (indice-1)-(chipSelect*8);
     bitWrite(_portas[chipSelect],pinSelect,value);
  	syncData();   
 }
 
-void Controller595::syncData(){
+void Expander595::syncData(){
 	::digitalWrite(_pinLacth, LOW);
     
     for (int i=_chips-1; i>=0; i--)  {

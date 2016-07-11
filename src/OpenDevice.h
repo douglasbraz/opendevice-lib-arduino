@@ -103,6 +103,7 @@ private:
 
 	Device* devices[MAX_DEVICE];
 	CommandCallback commands[MAX_COMMAND];
+	AbstractExpander *expander;
 
 	// Debouncing of normal pressing (for Sensor's)
 	long time;
@@ -323,6 +324,8 @@ void begin(ESP8266WiFiClass &wifi){
 
 	void enableDebug(uint8_t debugTarget = DEBUG_SERIAL);
 
+	void setIoExpander(AbstractExpander *expander);
+
 	void send(Command cmd);
 
 	/** Create a simple command (using lastCMD buffer)*/
@@ -349,6 +352,8 @@ void begin(ESP8266WiFiClass &wifi){
 	Device* addDevice(char* name, uint8_t pin, Device::DeviceType type, bool sensor,uint8_t id);
 	Device* addDevice(char* name, uint8_t pin, Device::DeviceType type);
 	Device* addDevice(Device& device);
+
+	Device* addLogical(char* name, uint8_t pin, AbstractExpander *expander=NULL, uint8_t id=0);
 
 	bool addCommand(const char * name, void (*function)());
 

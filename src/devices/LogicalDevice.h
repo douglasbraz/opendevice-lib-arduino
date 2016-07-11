@@ -9,7 +9,6 @@
 
 #include "Arduino.h"
 #include "Device.h"
-#include "Controller595.h"
 #include "AbstractExpander.h"
 
 class LogicalDevice : public Device {
