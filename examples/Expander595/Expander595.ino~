@@ -1,23 +1,18 @@
 /*
  * *****************************************************************************
- * See tutorial: https://opendevice.atlassian.net/wiki/display/DOC/A.+First+Steps+with+ODev
+ * See tutorial:  https://opendevice.atlassian.net/wiki/display/DOC/Port+Expanders
  * This example code is in the public domain.
  * *****************************************************************************
  */
 #include <OpenDevice.h>
-#include <devices/Controller595.h>
-
-Controller595 control(8,12,11,3);
-LogicalDevice led(1);
-LogicalDevice led1(9);
-LogicalDevice led2(22);
+#include <devices/Expander595.h>
 
 void setup(){
-    control.begin();
     ODev.enableDebug();
-    ODev.addDevice(led); // ID:1
-    ODev.addDevice(led1); // ID:2
-    ODev.addDevice(led2); // ID:3
+    ODev.setIoExpander(new Expander595(8,12,11,2));//pin load, pin clock, pin data, lenght of chip
+    ODev.addLogical("led 0",1); // ID:1 chip:1 Q0
+    ODev.addLogical("led 1",2); // ID:2 chip:1 Q1
+    ODev.addLogical("led 2",15); // ID:3 chip:2 Q6
     ODev.begin(); // by default call Serial.begin() and while(!Serial) on Leonardo
 }
 
